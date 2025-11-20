@@ -1,0 +1,8 @@
+{
+  "name": "Dr. Burger YS",
+  "description": "Dr. Burger ortakları ve yöneticileri için stratejik görev dağılımı ve koordinasyon platformu.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
