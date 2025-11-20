@@ -3,8 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Task, Project, FeedPost, User, Message, TimeLog } from '../types';
 
 // Supabase Yapılandırması
-// Güvenli erişim için optional chaining (?.) kullanıyoruz.
-// Eğer ortam değişkenleri yoksa, hardcoded değerler devreye girer.
+// Vercel/Vite ortamında güvenli erişim
 const SUPABASE_URL = (import.meta as any)?.env?.VITE_SUPABASE_URL || 'https://tuifbxtxkrzjkrycnxqd.supabase.co';
 const SUPABASE_ANON_KEY = (import.meta as any)?.env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWZieHR4a3J6amtyeWNueHFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2NjE5MjEsImV4cCI6MjA3OTIzNzkyMX0.lTs1ekoE3viroA4Yzc2SXqV3hBNK1kquktiWizCzS3g';
 

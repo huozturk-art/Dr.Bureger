@@ -2,9 +2,9 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Task } from '../types';
 
-// API Key must be obtained from process.env.API_KEY per guidelines
-// Safe access for browser environments
-const API_KEY = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
+// Vercel/Vite environment variable access
+// We use (import.meta as any) to bypass TypeScript errors if 'env' types aren't generated
+const API_KEY = (import.meta as any)?.env?.VITE_GEMINI_API_KEY;
 
 // Initialize client only if key exists (supports simulation mode)
 const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
