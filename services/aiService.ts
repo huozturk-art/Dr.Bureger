@@ -2,10 +2,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Task } from '../types';
 
-// API Key must be obtained from process.env.API_KEY
-const API_KEY = process.env.API_KEY;
+// API Key must be obtained from process.env.API_KEY per guidelines
+// Safe access for browser environments
+const API_KEY = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
 
-// Initialize client only if key exists
+// Initialize client only if key exists (supports simulation mode)
 const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 /**
