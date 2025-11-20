@@ -3,14 +3,39 @@ import { createClient } from '@supabase/supabase-js';
 import { Task, Project, FeedPost, User, Message, TimeLog } from '../types';
 
 // Supabase Yapılandırması
-// Not: Production ortamında bu anahtarlar sunucu tarafında veya .env dosyasında saklanmalıdır.
-const SUPABASE_URL = 'https://tuifbxtxkrzjkrycnxqd.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWZieHR4a3J6amtyeWNueHFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2NjE5MjEsImV4cCI6MjA3OTIzNzkyMX0.lTs1ekoE3viroA4Yzc2SXqV3hBNK1kquktiWizCzS3g';
+// Öncelik Vercel/Env değişkenlerindedir. Yoksa hardcoded değerler kullanılır.
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://tuifbxtxkrzjkrycnxqd.supabase.co';
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR1aWZieHR4a3J6amtyeWNueHFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2NjE5MjEsImV4cCI6MjA3OTIzNzkyMX0.lTs1ekoE3viroA4Yzc2SXqV3hBNK1kquktiWizCzS3g';
 
 // İstemciyi başlat
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export const supabaseService = {
+  
+  // --- Storage ---
+
+  async uploadFile(file: File, bucket: string = 'media'): Promise<string | null> {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        return null;
+      }
+
+      const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+      return data.publicUrl;
+    } catch (error) {
+      console.error('File upload exception:', error);
+      return null;
+    }
+  },
   
   // --- Auth & Profile ---
   
@@ -105,6 +130,7 @@ export const supabaseService = {
     if (updates.statusMessage !== undefined) payload.status_message = updates.statusMessage;
     if (updates.phone !== undefined) payload.phone = updates.phone;
     if (updates.isOnline !== undefined) payload.is_online = updates.isOnline;
+    if (updates.avatar !== undefined) payload.avatar = updates.avatar;
     
     const { data, error } = await supabase
       .from('profiles')
